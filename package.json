@@ -1,0 +1,24 @@
+{
+  "name": "node-github-repo-remover",
+  "version": "1.0.0",
+  "description": "A simple utility that will back up and / or delete repos in bulk",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "github",
+    "github-api",
+    "delete",
+    "backup",
+    "bulk",
+    "repos",
+    "repo"
+  ],
+  "author": "Matthew Cale",
+  "license": "ISC",
+  "dependencies": {
+    "inquirer": "^5.0.1",
+    "request": "^2.83.0"
+  }
+}
