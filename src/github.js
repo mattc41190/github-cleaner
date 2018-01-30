@@ -1,8 +1,9 @@
-const request = require('request');
 const fs = require('fs');
-const apiBase = 'https://github.homeawaycorp.com/api/v3';
+const conf = require('../conf.js');
+const request = require('request');
+const apiBase = conf.apiBase;
 
-function backupRepos(conf, repos, done) {
+function backupRepos(repos, done) {
   for (let i = 0; i < repos.length; i++) {
     let repo = repos[i];
     const archiveLocation = {
@@ -30,37 +31,7 @@ function backupRepos(conf, repos, done) {
   }
 }
 
-function createRepo(conf) {
-  const reposRequest = {
-    url: `${apiBase}/user/repos`,
-    rejectUnauthorized: false,
-    headers: {
-      'User-Agent': 'request',
-      'Authorization': `token ${conf.token}`
-    },
-    json: {
-      "name": "Hello-World",
-      "description": "This is your first repository",
-      "homepage": "https://github.com",
-      "private": false,
-      "has_issues": true,
-      "has_projects": true,
-      "has_wiki": true
-    }
-  }
-
-  return new Promise(function (resolve, reject) {
-    request.post(reposRequest, function (err, resp, body) {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(resp)
-      }
-    });
-  });
-}
-
-function getRepos(conf) {
+function getRepos() {
   const reposRequest = {
     url: `${apiBase}/users/${conf.username}/repos`,
     rejectUnauthorized: false,
@@ -83,7 +54,7 @@ function getRepos(conf) {
   });
 }
 
-function removeRepos(conf, repos, done) {
+function removeRepos(repos, done) {
   for (let i = 0; i < repos.length; i++) {
     let repo = repos[i]
     const deleteRepoRequest = {
@@ -107,5 +78,5 @@ function removeRepos(conf, repos, done) {
 }
 
 module.exports = {
-  backupRepos, getRepos, removeRepos, createRepo
+  backupRepos, getRepos, removeRepos
 };

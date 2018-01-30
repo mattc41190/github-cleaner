@@ -1,5 +1,5 @@
 {
-  "name": "node-github-repo-remover",
+  "name": "github-cleaner",
   "version": "1.0.0",
   "description": "A simple utility that will back up and / or delete repos in bulk",
   "main": "index.js",
@@ -8,6 +8,9 @@
   },
   "keywords": [
     "github",
+    "cleaner",
+    "git",
+    "manage",
     "github-api",
     "delete",
     "backup",

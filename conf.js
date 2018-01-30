@@ -1,5 +1,6 @@
 module.exports = {
-    "username": "mattcale",
-    "token": "23aaf357546766cc887b20d0ac336b8303704e5b",
-    "archivesPath": "/Users/mcale/.github-archives"
+    "username": "mattc41190",
+    "token": "3fbe370ece9dd59b9ac220166aedb3a9704ef322",
+    "archivesPath": "/Users/mattcale/Desktop/github-archives",
+    "apiBase": "https://api.github.com"
 };

@@ -1,11 +1,16 @@
 const asker = require('./src/asker.js');
-const conf = require('./conf.js');
 const github = require('./src/github.js');
 
 let REPOS; // Global reference to collection of repos
 let ORIGINAL_ANSWERS; // Global reference to inital request from user
 
-github.getRepos(conf)
+helper.checkForConfData()
+.then((confData) => {
+  if (!confData) {
+    createConfData()
+  }
+})
+github.getRepos()
   .then(repos => {
     REPOS = repos;
     return asker.getUserRequest(repos);
@@ -17,24 +22,17 @@ github.getRepos(conf)
   .then(answers => {
     if (answers.userIsSure) {
       if (ORIGINAL_ANSWERS.action === 'DELETE'){
-        github.removeRepos(conf, ORIGINAL_ANSWERS.repos, () => {
-          console.log('Done');
-        });
+        github.removeRepos(ORIGINAL_ANSWERS.repos, logStatus);
       } else if (ORIGINAL_ANSWERS.action === 'BACKUP') {
-        github.backupRepos(conf, ORIGINAL_ANSWERS.repos, (err, data) => {
-          if(err) {
-            console.log(err);
-          }
-          console.log(data);
-        });
+        github.backupRepos(ORIGINAL_ANSWERS.repos, logStatus);
       }
       else if (ORIGINAL_ANSWERS.action === 'BACKUP & DELETE') {
-        github.backupRepos(conf, ORIGINAL_ANSWERS.repos, (err, data) => {
+        github.backupRepos(ORIGINAL_ANSWERS.repos, (err, data) => {
           if(err) {
             console.log(err);
           }
           console.log(data);
-          github.removeRepos(conf, ORIGINAL_ANSWERS.repos, logStatus);
+          github.removeRepos(ORIGINAL_ANSWERS.repos, logStatus);
         });
       }
     } else {
