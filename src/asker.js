@@ -1,5 +1,30 @@
 const inquirer = require('inquirer');
 
+function getConfData() {
+  return inquirer.prompt([{
+      type: 'input',
+      name: 'username',
+      message: 'GitHub Username?',
+  },
+  {
+      type: 'input',
+      name: 'token',
+      message: 'GitHub API Token:',
+  },
+  {
+      type: 'input',
+      name: 'archivesPath',
+      message: 'Location To Save Backups:',
+  },
+  {
+      type: 'input',
+      name: 'apiBase',
+      message: 'GitHub API URL (Modify if you are using GitHub Enterprise)',
+      default: 'https://api.github.com'
+  }
+  ])
+}
+
 function getUserRequest(repos) {
     return inquirer.prompt([{
         type: 'checkbox',
@@ -24,4 +49,4 @@ function confirmUserRequest(answers) {
     }])
 }
 
-module.exports = {confirmUserRequest, getUserRequest};
+module.exports = {confirmUserRequest, getConfData, getUserRequest};

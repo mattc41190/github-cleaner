@@ -9,16 +9,15 @@ function checkForConfData() {
     let parentdirConf = `${path.join(__dirname, '../')}${CONF_FILE}`
     if (fs.existsSync(homedirConf)) {
       resolve(JSON.parse(fs.readFileSync(homedirConf)));
-    } else if(parentdirConf) {
+    } else if(fs.existsSync(parentdirConf)) {
       resolve(JSON.parse(fs.readFileSync(parentdirConf)));
     } 
     resolve(null); // If no conf file found return null
   });
 }
 
-checkForConfData()
-.then((data) => {
-  if (data) {
-    console.log(data);
-  }
-})
+function saveConfData(confData) {
+  fs.writeFileSync('github-cleaner-conf.json', JSON.stringify(confData));
+}
+
+module.exports = {checkForConfData, saveConfData};
