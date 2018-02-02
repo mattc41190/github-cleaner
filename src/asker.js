@@ -36,7 +36,7 @@ function getUserRequest(repos) {
         type: 'list',
         name: 'action',
         message: 'what would you like to do with these repos?',
-        choices: ['DELETE', 'BACKUP', 'BACKUP & DELETE']
+        choices: ['DELETE', 'BACKUP', 'BACKUP & DELETE', 'NONE']
     }
     ])
 }
