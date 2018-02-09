@@ -34,7 +34,7 @@ class Helper {
               reject('Token must be valid');
             }
             if (!_archiveLocationIsValid(confData.archivesPath)) {
-              reject('Token must be valid');
+              reject('Archive location must be valid');
             }
             resolve(confData)
         })
@@ -43,7 +43,7 @@ class Helper {
   }
 }
 
-// PRIVATE
+// PRIVATE METHODS
 function _apiBaseIsValid(url) {
     return new Promise((resolve, reject) => {
       const apiBaseRequest = {
@@ -64,7 +64,10 @@ function _usernameIsValid(confData) {
   return new Promise((resolve, reject) => {
     github.findUser(confData.apiBase, confData.username, (err, data) => {
       if (err) { reject(err); } 
-      resolve(true);
+      if (data !== 200) {
+        reject(data)
+      }
+      resolve(data);
     });
   });
 }
