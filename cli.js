@@ -4,7 +4,6 @@ const configurationManager = require('./configuration-manager.js');
 const githubManager = require('./github-manager.js');
 
 function start(confData) {
-  console.log(confData);
   console.log('Welcome to GitHub Cleaner');
   console.log('Let\'s make your repos shine');
 
@@ -36,11 +35,9 @@ function start(confData) {
 function init() {
   return Helper.checkForConfData()
     .then((confData) => {
-      // console.log(confData);
-      Helper.validateConfData(confData);
+      return Helper.validateConfData(confData);
     })
     .then((confData) => {
-      console.log(confData);
       start(confData);
     })
     .catch((err) => {

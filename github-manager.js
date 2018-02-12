@@ -3,7 +3,6 @@ const Github = require('./src/github.js');
 const asker = require('./src/asker.js');
 
 const manageGithub = function manageGithub(confData) {
-  console.log(confData);
   const github = new Github(confData)
   return github.getRepos()
   .then(repos => {
@@ -31,7 +30,7 @@ const manageGithub = function manageGithub(confData) {
         });
       }
     } else {
-        console.log('No sweat');
+        console.log('No problem');
     }
   })
   .catch(err => console.log(err));
