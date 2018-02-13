@@ -36,7 +36,7 @@ const init = function init() {
       start(confData);
     })
     .catch((err) => {
-      if (proces.env.ENV ==='DEV') {
+      if (process.env.ENV ==='DEV') {
         console.log(err);
       }
       console.log('Your application is not configured correctly please answer these questions for more details run in DEV mode');
