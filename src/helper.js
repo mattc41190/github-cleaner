@@ -3,17 +3,18 @@ const fs = require('fs');
 const Github = require('./github.js');
 const request = require('request');
 const homedir = require('os').homedir();
+// const PROJECT_ROOT =  process.env.PROJECT_ROOT;
 const CONF_FILE = 'github-cleaner-conf.json';
 
 class Helper {
   static checkForConfData() {
     return new Promise((resolve, reject) => {
       const homedirConf = `${homedir}/${CONF_FILE}`;
-      const parentdirConf = `${path.join(__dirname, '../')}${CONF_FILE}`
+      const projectDirConf = `${path.join(path.dirname(require.main.filename), '../')}${CONF_FILE}`
       if (fs.existsSync(homedirConf)) {
         resolve(JSON.parse(fs.readFileSync(homedirConf)));
-      } else if (fs.existsSync(parentdirConf)) {
-        resolve(JSON.parse(fs.readFileSync(parentdirConf)));
+      } else if (fs.existsSync(projectDirConf)) {
+        resolve(JSON.parse(fs.readFileSync(projectDirConf)));
       }
       resolve(null); // If no CONF_FILE found return null
     });
@@ -59,7 +60,7 @@ const _apiBaseIsValid = function _apiBaseIsValid(url) {
 }
 
 const _usernameIsValid = function _usernameIsValid(confData) {
-  const github = new Github();
+  const github = new Github(confData);
   return new Promise((resolve, reject) => {
     github.findUser(confData.apiBase, confData.username, (err, data) => {
       if (err) { reject(err); } 

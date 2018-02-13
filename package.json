@@ -2,14 +2,14 @@
   "name": "github-cleaner",
   "version": "1.1.0",
   "description": "A simple utility that will back up and / or delete repos in bulk",
-  "main": "index.js",
+  "main": "./bin/ghclean.js",
   "bin": {
     "ghclean": "./bin/ghclean.js"
   },
   "preferGlobal": true,
   "scripts": {
     "test": "mocha",
-    "start": "node index.js",
+    "start": "ENV=DEV node ./bin/ghclean.js",
     "publish:major": "npm version major && npm publish",
     "publish:minor": "npm version minor && npm publish",
     "publish:patch": "npm version patch && npm publish"

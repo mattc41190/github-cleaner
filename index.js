@@ -36,7 +36,10 @@ const init = function init() {
       start(confData);
     })
     .catch((err) => {
-      console.log('Your application is not configured correctly please answer these questions');
+      if (proces.env.ENV ==='DEV') {
+        console.log(err);
+      }
+      console.log('Your application is not configured correctly please answer these questions for more details run in DEV mode');
       configurationManager.manageConfiguration()
     })
 }

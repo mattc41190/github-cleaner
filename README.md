@@ -28,3 +28,5 @@ Install this utility, answer a few questions, get to cleaning out your cluttered
 
 If you are running the application for the first time you need to answer some questions so that github-cleaner can find your repos.
 
+This module is very new please run `ENV=DEV ghclean` for more details on errors.
+

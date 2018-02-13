@@ -1,17 +1,17 @@
 const fs = require('fs');
 const request = require('request');
-const apiBase = conf.apiBase;
 
 class Github {
   constructor(conf) {
     this.conf = conf;
+    this.apiBase = conf.apiBase;
   }
 
   backupRepos(repos, done) {
     for (let i = 0; i < repos.length; i++) {
       let repo = repos[i];
       const archiveLocation = {
-        url: `${apiBase}/repos/${repo}/zipball/master`,
+        url: `${this.apiBase}/repos/${repo}/zipball/master`,
         rejectUnauthorized: false,
         encoding: null,
         headers: {
@@ -37,7 +37,7 @@ class Github {
 
   getRepos() {
     const reposRequest = {
-      url: `${apiBase}/users/${this.conf.username}/repos`,
+      url: `${this.apiBase}/users/${this.conf.username}/repos`,
       rejectUnauthorized: false,
       headers: {
         'User-Agent': 'request',
@@ -62,7 +62,7 @@ class Github {
     for (let i = 0; i < repos.length; i++) {
       let repo = repos[i]
       const deleteRepoRequest = {
-        url: `${apiBase}/repos/${repo}`,
+        url: `${this.apiBase}/repos/${repo}`,
         rejectUnauthorized: false,
         headers: {
           'User-Agent': 'request',
@@ -83,7 +83,7 @@ class Github {
 
   findUser(apiBase, username, done) {
     const usernameRequest = {
-      url: `${apiBase}/users/${username}`,
+      url: `${this.apiBase}/users/${username}`,
       rejectUnauthorized: false,
       headers: {
         'User-Agent': 'request'
