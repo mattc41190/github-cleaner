@@ -36,7 +36,7 @@ const init = function init() {
       start(confData);
     })
     .catch((err) => {
-      console.log(err);
+      console.log('Your application is not configured correctly please answer these questions');
       configurationManager.manageConfiguration()
     })
 }

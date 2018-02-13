@@ -1,5 +1,4 @@
 const fs = require('fs');
-const conf = require('../github-cleaner-conf.json');
 const request = require('request');
 const apiBase = conf.apiBase;
 
@@ -99,9 +98,5 @@ class Github {
     });
   }
 }
-
-
-
-
 
 module.exports = Github;
