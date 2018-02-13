@@ -1,17 +1,20 @@
 const fs = require('fs');
-const Github = require('./src/github.js');
-const asker = require('./src/asker.js');
+const Github = require('./github.js');
+const Asker = require('./asker.js');
 
 const manageGithub = function manageGithub(confData) {
   const github = new Github(confData)
   return github.getRepos()
   .then(repos => {
     REPOS = repos;
-    return asker.getUserRequest(repos);
+    return Asker.getUserRequest(repos);
   })
   .then(answers => {
+    if (answers.action === 'NONE') {
+      return true;
+    }
     ORIGINAL_ANSWERS = answers;
-    return asker.confirmUserRequest(answers);
+    return Asker.confirmUserRequest(answers);
   })
   .then(answers => {
     if (answers.userIsSure) {
@@ -30,7 +33,8 @@ const manageGithub = function manageGithub(confData) {
         });
       }
     } else {
-        console.log('No problem');
+      // Reset Point
+        return true;
     }
   })
   .catch(err => console.log(err));

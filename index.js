@@ -1,67 +1,51 @@
-const asker = require('./src/asker.js');
-const Github = require('./src/github.js');
-const Helper = require('./src/helper.js');
-let github;
+const inquirer = require('inquirer');
+const Asker = require('./src/Asker.js');
+const Helper = require('./src/Helper.js');
+const configurationManager = require('./src/configuration-manager.js');
+const githubManager = require('./src/github-manager.js');
 
-let REPOS; // Global reference to collection of repos
-let ORIGINAL_ANSWERS; // Global reference to inital request from user
-let CONF_DATA;
+console.log('Welcome to GitHub Cleaner');
+console.log('Let\'s make your repos shine');
 
-Helper.checkForConfData()
-.then((confData) => {
-  if (!confData) {
-    return asker.getConfData()
-      .then((confData) => {
-        Helper.saveConfData(confData);
-        return Helper.validateConfData(confData)
-        .then((confData) =>{
-          return confData;
-        })
-      })
-  } else {
-    return Helper.validateConfData(confData)
-    .then((confData) =>{
-      return confData;
-    });
-  }
-})
-.then((confData) => {
-  github = new Github(confData);
-  return github.getRepos();
-})
-.then(repos => {
-  REPOS = repos;
-  return asker.getUserRequest(repos);
-})
-.then(answers => {
-  ORIGINAL_ANSWERS = answers;
-  return asker.confirmUserRequest(answers);
-})
-.then(answers => {
-  if (answers.userIsSure) {
-    if (ORIGINAL_ANSWERS.action === 'DELETE'){
-      github.removeRepos(ORIGINAL_ANSWERS.repos, logStatus);
-    } else if (ORIGINAL_ANSWERS.action === 'BACKUP') {
-      github.backupRepos(ORIGINAL_ANSWERS.repos, logStatus);
+const start = function start(confData) {
+  return Asker.getPrimaryAction()
+  .then(answers => {
+    if (answers.desiredAction === 'Configuration') {
+      return configurationManager.manageConfiguration()
+      .then(() => { init() });
     }
-    else if (ORIGINAL_ANSWERS.action === 'BACKUP & DELETE') {
-      github.backupRepos(ORIGINAL_ANSWERS.repos, (err, data) => {
-        if(err) {
-          console.log(err);
-        }
-        console.log(data);
-        github.removeRepos(ORIGINAL_ANSWERS.repos, logStatus);
-      });
+    else if (answers.desiredAction === 'Github Cleaner') {
+      return githubManager.manageGithub(confData)
+      .then(() => { init() });
     }
-  } else {
-      console.log('No sweat');
-  }
-})
-.catch(err => console.log(err));
-
-function logStatus(err, data){
-  if (err) {
-    console.log(err);
-  }
-  console.log(data);
+    else if (answers.desiredAction === 'Exit') {
+      exitProcess();
+    } else {
+      exitProcess();
+    }
+  })
+  .catch(err => console.log(err));  
 }
+
+const init = function init() {
+  return Helper.checkForConfData()
+    .then((confData) => {
+      return Helper.validateConfData(confData);
+    })
+    .then((confData) => {
+      start(confData);
+    })
+    .catch((err) => {
+      console.log(err);
+      configurationManager.manageConfiguration()
+    })
+}
+
+function exitProcess() {
+  process.exit(0);
+}
+
+init();
+
+// Export Modules For Testing
+module.exports = {init, start, exitProcess};

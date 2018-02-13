@@ -44,13 +44,12 @@ class Helper {
 }
 
 // PRIVATE METHODS
-function _apiBaseIsValid(url) {
+const _apiBaseIsValid = function _apiBaseIsValid(url) {
     return new Promise((resolve, reject) => {
       const apiBaseRequest = {
         url,
         headers: { 'User-Agent': 'request' }
       }
-      
       request(apiBaseRequest, (err, resp, body) => {
         if (err) { reject(err) }
         else if (resp.statusCode !== 200) { reject(resp.statusCode)} 
@@ -59,7 +58,7 @@ function _apiBaseIsValid(url) {
   });
 }
 
-function _usernameIsValid(confData) {
+const _usernameIsValid = function _usernameIsValid(confData) {
   const github = new Github();
   return new Promise((resolve, reject) => {
     github.findUser(confData.apiBase, confData.username, (err, data) => {
@@ -73,11 +72,11 @@ function _usernameIsValid(confData) {
 }
 
 
-function _tokenIsValid(token){
+const _tokenIsValid = function _tokenIsValid(token){
   return typeof token === 'string';
 }
 
-function _archiveLocationIsValid(path) {
+const _archiveLocationIsValid = function _archiveLocationIsValid(path) {
   return fs.existsSync(path);
 }
 

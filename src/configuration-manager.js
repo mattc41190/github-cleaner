@@ -1,9 +1,9 @@
 const fs = require('fs');
-const Helper = require('./src/helper.js');
-const asker = require('./src/asker.js');
+const Helper = require('./helper.js');
+const Asker = require('./asker.js');
 
 const createNewConfig = function createNewConfig () {
-  return asker.getConfData()
+  return Asker.getConfData()
     .then((confData) => {
       Helper.saveConfData(confData);
       return Helper.validateConfData(confData)
@@ -15,7 +15,7 @@ const createNewConfig = function createNewConfig () {
 }
 
 const modifyConfig = function modifyConfig (confData) {
-  return asker.getConfChangeRequest(confData)
+  return Asker.getConfChangeRequest(confData)
     .then((answers) => {
       confData.username = answers.newUsername ? answers.newUsername : confData.username;
       confData.token = answers.newToken ? answers.newToken : confData.token;
