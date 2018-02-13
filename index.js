@@ -45,7 +45,5 @@ function exitProcess() {
   process.exit(0);
 }
 
-init();
-
-// Export Modules For Testing
+// Export All Modules For Testing
 module.exports = {init, start, exitProcess};
