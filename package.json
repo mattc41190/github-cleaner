@@ -1,6 +1,6 @@
 {
   "name": "github-cleaner",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "A simple utility that will back up and / or delete repos in bulk",
   "main": "./bin/ghclean.js",
   "repository": {
