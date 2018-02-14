@@ -34,3 +34,4 @@ Install this utility, answer a few questions, get to cleaning out your cluttered
 
 * When creating a token only give it the privileges it needs. This application needs the ability to Find, Backup and Delete repos.
 
+![GitHub_Delete_Right_Example](images/delete_right.png)
