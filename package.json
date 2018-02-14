@@ -3,6 +3,10 @@
   "version": "1.6.0",
   "description": "A simple utility that will back up and / or delete repos in bulk",
   "main": "./bin/ghclean.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mattc41190/github-cleaner"
+  },
   "bin": {
     "ghclean": "./bin/ghclean.js"
   },
