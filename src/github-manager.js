@@ -45,7 +45,7 @@ function logStatus(err, data){
   if (err) {
     console.log(err);
   }
-  console.log(data);
+  // console.log(data);
 }
 
 module.exports = {manageGithub};

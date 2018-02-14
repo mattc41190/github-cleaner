@@ -1,3 +1,4 @@
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 const fs = require('fs');
 const request = require('request');
 
@@ -29,7 +30,7 @@ class Github {
           fs.writeFileSync(`${this.conf.archivesPath}/${repo}_Compressed.zip`, body);
         }
         if (i === repos.length - 1) {
-          done(null, "Success");
+          done(null, "\n Success");
         }
       });
     }
@@ -75,7 +76,7 @@ class Github {
           done(err, null)
         }
         if (i === repos.length - 1) {
-          done(null, 'Success');
+          done(null, '\n Success');
         }
       });
     }
@@ -86,7 +87,8 @@ class Github {
       url: `${this.apiBase}/users/${username}`,
       rejectUnauthorized: false,
       headers: {
-        'User-Agent': 'request'
+        'User-Agent': 'request',          
+        'Authorization': `token ${this.conf.token}`
       }
     }
 

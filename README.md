@@ -24,9 +24,13 @@ Install this utility, answer a few questions, get to cleaning out your cluttered
 5. Confirm Action and Repo(s)
 6. Repeat (if needed)
 
-### Notes:
+## Notes:
 
-If you are running the application for the first time you need to answer some questions so that github-cleaner can find your repos.
+* If you are running the application for the first time you need to answer some questions so that github-cleaner can find your repos.
 
-This module is very new please run `ENV=DEV ghclean` for more details on errors.
+* This module is very new please run `ENV=DEV ghclean` for more details on errors for issue reporting.
+
+* If you are running this tool for Enterprise your apiBase will likely look like `http(s)://hostname/api/v3/`
+
+* When creating a token only give it the privileges it needs. This application needs the ability to Find, Backup and Delete repos.
 

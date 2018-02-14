@@ -1,3 +1,4 @@
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 const path = require('path');
 const fs = require('fs');
 const Github = require('./github.js');
@@ -26,7 +27,7 @@ class Helper {
 
   static validateConfData(confData) {
     return new Promise((resolve, reject) => {
-        _apiBaseIsValid(confData.apiBase)
+        _apiBaseIsValid(confData.apiBase, confData.token)
         .then(() => {
           _usernameIsValid(confData)
         })
@@ -45,11 +46,12 @@ class Helper {
 }
 
 // PRIVATE METHODS
-const _apiBaseIsValid = function _apiBaseIsValid(url) {
+const _apiBaseIsValid = function _apiBaseIsValid(url, token) {
     return new Promise((resolve, reject) => {
       const apiBaseRequest = {
         url,
-        headers: { 'User-Agent': 'request' }
+        headers: { 'User-Agent': 'request' },
+        'Authorization': `token ${token}`
       }
       request(apiBaseRequest, (err, resp, body) => {
         if (err) { reject(err) }
