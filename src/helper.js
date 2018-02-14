@@ -50,8 +50,7 @@ const _apiBaseIsValid = function _apiBaseIsValid(url, token) {
     return new Promise((resolve, reject) => {
       const apiBaseRequest = {
         url,
-        headers: { 'User-Agent': 'request' },
-        'Authorization': `token ${token}`
+        headers: { 'User-Agent': 'request', 'Authorization': `token ${token}` },
       }
       request(apiBaseRequest, (err, resp, body) => {
         if (err) { reject(err) }
