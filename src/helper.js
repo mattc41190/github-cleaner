@@ -22,7 +22,7 @@ class Helper {
   }
 
   static saveConfData(confData) {
-    fs.writeFileSync('github-cleaner-conf.json', JSON.stringify(confData));
+    fs.writeFileSync(path.join(homedir, CONF_FILE), JSON.stringify(confData));
   }
 
   static validateConfData(confData) {

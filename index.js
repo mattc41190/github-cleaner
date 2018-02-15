@@ -41,7 +41,10 @@ const init = function init() {
       }
       console.log('Your application is not configured correctly please answer these questions for more details run in DEV mode');
       configurationManager.manageConfiguration()
-    })
+      .then((confData) => {
+        start(confData);
+      });
+    });
 }
 
 function exitProcess() {
