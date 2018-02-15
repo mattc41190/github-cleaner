@@ -4,7 +4,6 @@ const fs = require('fs');
 const Github = require('./github.js');
 const request = require('request');
 const homedir = require('os').homedir();
-// const PROJECT_ROOT =  process.env.PROJECT_ROOT;
 const CONF_FILE = 'github-cleaner-conf.json';
 
 class Helper {

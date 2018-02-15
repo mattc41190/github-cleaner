@@ -1,6 +1,7 @@
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 const fs = require('fs');
 const request = require('request');
+const axios = require('axios');
 
 class Github {
   constructor(conf) {
@@ -8,32 +9,36 @@ class Github {
     this.apiBase = conf.apiBase;
   }
 
-  backupRepos(repos, done) {
-    for (let i = 0; i < repos.length; i++) {
-      let repo = repos[i];
-      const archiveLocation = {
-        url: `${this.apiBase}/repos/${repo}/zipball/master`,
-        rejectUnauthorized: false,
-        encoding: null,
-        headers: {
-          'Accept': 'application/vnd.github.v3.raw',
-          'User-Agent': 'request',
-          'Authorization': `token ${this.conf.token}`
+  backupRepos(repos) {
+    return new Promise((resolve, reject) => {
+      for (let repo of repos) {
+        const backupRepoRequest = {
+          method: 'get',
+          url: `${this.apiBase}/repos/${repo}/zipball/master`,
+          responseType: 'stream',
+          headers: {
+            'Accept': 'application/vnd.github.v3.raw',
+            'User-Agent': 'axios',
+            'Authorization': `token ${this.conf.token}`
+          }
         }
-      }
 
-      request.get(archiveLocation, (err, resp, body) => {
-        if (err) {
-          done(err, null)
-        } else {
-          repo = repo.split('/').join('_');
-          fs.writeFileSync(`${this.conf.archivesPath}/${repo}_Compressed.zip`, body);
-        }
-        if (i === repos.length - 1) {
-          done(null, "\n Success");
-        }
-      });
-    }
+        axios(backupRepoRequest)
+          .then((resp) => {
+            if (resp.status !== 200) {
+              reject(resp)
+            } else {
+              repo = repo.split('/').join('_');
+              fs.writeFileSync(`${this.conf.archivesPath}/${repo}_Compressed.zip`, resp.data);
+              resolve(true)
+            }
+
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      }
+    });
   }
 
   getRepos() {
@@ -87,7 +92,7 @@ class Github {
       url: `${this.apiBase}/users/${username}`,
       rejectUnauthorized: false,
       headers: {
-        'User-Agent': 'request',          
+        'User-Agent': 'request',
         'Authorization': `token ${this.conf.token}`
       }
     }

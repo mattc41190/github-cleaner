@@ -19,9 +19,9 @@ const manageGithub = function manageGithub(confData) {
   .then(answers => {
     if (answers.userIsSure) {
       if (ORIGINAL_ANSWERS.action === 'DELETE'){
-        github.removeRepos(ORIGINAL_ANSWERS.repos, logStatus);
+        return github.removeRepos(ORIGINAL_ANSWERS.repos, logStatus);
       } else if (ORIGINAL_ANSWERS.action === 'BACKUP') {
-        github.backupRepos(ORIGINAL_ANSWERS.repos, logStatus);
+        return github.backupRepos(ORIGINAL_ANSWERS.repos, logStatus);
       }
       else if (ORIGINAL_ANSWERS.action === 'BACKUP & DELETE') {
         github.backupRepos(ORIGINAL_ANSWERS.repos, (err, data) => {
@@ -37,7 +37,7 @@ const manageGithub = function manageGithub(confData) {
         return true;
     }
   })
-  .catch(err => console.log(err));
+  .catch(err => console.log(Object.keys(err)));
 }
 
 
