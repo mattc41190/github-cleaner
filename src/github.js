@@ -1,7 +1,18 @@
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 const fs = require('fs');
-const request = require('request');
 const axios = require('axios');
+
+const createBackup = function createBackup(archivesPath, repo, content) {
+  return new Promise(function(resolve, reject) {
+    repo = repo.split('/').join('_');
+    fs.writeFile(`${archivesPath}/${repo}_Compressed.zip`, content, (err, data) => {
+      if (err) {
+        reject(err)
+      }
+      resolve(data)
+    });
+  });
+}
 
 class Github {
   constructor(conf) {
@@ -10,99 +21,102 @@ class Github {
   }
 
   backupRepos(repos) {
-    return new Promise((resolve, reject) => {
-      for (let repo of repos) {
-        const backupRepoRequest = {
-          method: 'get',
-          url: `${this.apiBase}/repos/${repo}/zipball/master`,
-          responseType: 'stream',
-          headers: {
-            'Accept': 'application/vnd.github.v3.raw',
-            'User-Agent': 'axios',
-            'Authorization': `token ${this.conf.token}`
-          }
+    const backups = [];
+    for (let repo of repos) {
+      const backupRequest = {
+        method: 'get',
+        url: `${this.apiBase}/repos/${repo}/zipball/master`,
+        responseType: 'stream',
+        headers: {
+          'Accept': 'application/vnd.github.v3.raw',
+          'User-Agent': 'axios',
+          'Authorization': `token ${this.conf.token}`
         }
+      };
 
-        axios(backupRepoRequest)
-          .then((resp) => {
-            if (resp.status !== 200) {
-              reject(resp)
-            } else {
-              repo = repo.split('/').join('_');
-              fs.writeFileSync(`${this.conf.archivesPath}/${repo}_Compressed.zip`, resp.data);
-              resolve(true)
-            }
+      const backup = axios(backupRequest)
+        .then((resp) => {
+          if (resp.status !== 200) {
+            return resp.status;
+          }
+          return createBackup(this.conf.archivesPath, repo, resp.data);
+        })
+        .then(data => {
+          return {
+            repo,
+            archivesPath: this.conf.archivesPath
+          }
+        });
 
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      }
+      backups.push(backup);
+    }
+
+    return axios.all(backups).then((backupsInfo) => {
+      backupsInfo.forEach(info => console.log(`${info.repo} -> ${info.archivesPath}`));
+      return backupsInfo;
     });
   }
 
   getRepos() {
     const reposRequest = {
+      method: 'get',
       url: `${this.apiBase}/users/${this.conf.username}/repos`,
-      rejectUnauthorized: false,
       headers: {
-        'User-Agent': 'request',
+        'User-Agent': 'axios',
         'Authorization': `token ${this.conf.token}`
       }
     }
-
-    return new Promise((resolve, reject) => {
-      request.get(reposRequest, (err, resp, body) => {
-        if (err) {
-          reject(err);
-        } else {
-          const repos = JSON.parse(body);
-          const namesAndIds = repos.map(repo => [repo.id, repo.full_name])
-          resolve(namesAndIds);
-        }
-      });
+    return axios(reposRequest)
+    .then((resp) => {
+      if (resp.status !== 200) {
+        return resp.status;
+      }
+      const repos = resp.data;
+      return repos.map(repo => [repo.id, repo.full_name])
     });
   }
 
-  removeRepos(repos, done) {
-    for (let i = 0; i < repos.length; i++) {
-      let repo = repos[i]
+  removeRepos(repos) {
+    const deletedRepos = [];
+    
+    for (let repo of repos) {
       const deleteRepoRequest = {
+        method: 'delete',
         url: `${this.apiBase}/repos/${repo}`,
-        rejectUnauthorized: false,
         headers: {
-          'User-Agent': 'request',
+          'User-Agent': 'axios',
           'Authorization': `token ${this.conf.token}`
         }
       }
-
-      request.delete(deleteRepoRequest, (err, resp, body) => {
-        if (err) {
-          done(err, null)
-        }
-        if (i === repos.length - 1) {
-          done(null, '\n Success');
-        }
+      
+      let deleteRequest = axios(deleteRepoRequest).then((resp) => {
+        if ((resp.status !== 204)) {
+          return resp.status;
+        } 
+        return repo
       });
+      
+      deletedRepos.push(deleteRequest)
     }
+    
+    return axios.all(deletedRepos)
+    .then((_deletedRepos) => {
+      _deletedRepos.forEach(deletedRepo => console.log(`${deletedRepo} -> DELETED`));
+      return deletedRepos;
+    });
   }
 
-  findUser(apiBase, username, done) {
+  findUser(username) {
     const usernameRequest = {
       url: `${this.apiBase}/users/${username}`,
-      rejectUnauthorized: false,
       headers: {
-        'User-Agent': 'request',
+        'User-Agent': 'axios',
         'Authorization': `token ${this.conf.token}`
       }
     }
 
-    request.get(usernameRequest, (err, resp, body) => {
-      if (err) {
-        done(err, null)
-      }
-      done(null, resp.statusCode);
-    });
+    return axios(usernameRequest);
+    
   }
 }
 

@@ -2,7 +2,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 const path = require('path');
 const fs = require('fs');
 const Github = require('./github.js');
-const request = require('request');
+const axios = require('axios');
 const homedir = require('os').homedir();
 const CONF_FILE = 'github-cleaner-conf.json';
 
@@ -46,28 +46,23 @@ class Helper {
 
 // PRIVATE METHODS
 const _apiBaseIsValid = function _apiBaseIsValid(url, token) {
-    return new Promise((resolve, reject) => {
       const apiBaseRequest = {
-        url,
-        headers: { 'User-Agent': 'request', 'Authorization': `token ${token}` },
+        method: 'get',
+        url: url,
+        headers: { 'User-Agent': 'axios', 'Authorization': `token ${token}` },
       }
-      request(apiBaseRequest, (err, resp, body) => {
-        if (err) { reject(err) }
-        else if (resp.statusCode !== 200) { reject(resp.statusCode)} 
-        resolve(true)
-    });
-  });
+      return axios(apiBaseRequest);
 }
 
 const _usernameIsValid = function _usernameIsValid(confData) {
   const github = new Github(confData);
   return new Promise((resolve, reject) => {
-    github.findUser(confData.apiBase, confData.username, (err, data) => {
-      if (err) { reject(err); } 
-      if (data !== 200) {
-        reject(data)
+    github.findUser(confData.username) 
+      .then((resp) => {
+      if (resp.status !== 200) {
+        reject(resp)
       }
-      resolve(data);
+      resolve(resp);
     });
   });
 }

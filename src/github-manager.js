@@ -3,6 +3,7 @@ const Github = require('./github.js');
 const Asker = require('./asker.js');
 
 const manageGithub = function manageGithub(confData) {
+  let ORIGINAL_ANSWERS;
   const github = new Github(confData)
   return github.getRepos()
   .then(repos => {
@@ -18,34 +19,19 @@ const manageGithub = function manageGithub(confData) {
   })
   .then(answers => {
     if (answers.userIsSure) {
-      if (ORIGINAL_ANSWERS.action === 'DELETE'){
-        return github.removeRepos(ORIGINAL_ANSWERS.repos, logStatus);
+      if (ORIGINAL_ANSWERS.action === 'DELETE') {
+        return github.removeRepos(ORIGINAL_ANSWERS.repos);
       } else if (ORIGINAL_ANSWERS.action === 'BACKUP') {
-        return github.backupRepos(ORIGINAL_ANSWERS.repos, logStatus);
+        return github.backupRepos(ORIGINAL_ANSWERS.repos)
       }
       else if (ORIGINAL_ANSWERS.action === 'BACKUP & DELETE') {
-        github.backupRepos(ORIGINAL_ANSWERS.repos, (err, data) => {
-          if(err) {
-            console.log(err);
-          }
-          console.log(data);
-          github.removeRepos(ORIGINAL_ANSWERS.repos, logStatus);
-        });
+        return github.backupRepos(ORIGINAL_ANSWERS.repos)
+        .then((data) => github.removeRepos(ORIGINAL_ANSWERS.repos));  
       }
-    } else {
-      // Reset Point
-        return true;
     }
+    return true;
   })
   .catch(err => console.log(Object.keys(err)));
-}
-
-
-function logStatus(err, data){
-  if (err) {
-    console.log(err);
-  }
-  // console.log(data);
 }
 
 module.exports = {manageGithub};
