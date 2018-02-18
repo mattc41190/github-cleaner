@@ -17,7 +17,6 @@ const createBackup = function createBackup(archivesPath, repo, content) {
 class Github {
   constructor(conf) {
     this.conf = conf;
-    this.apiBase = conf.apiBase;
   }
 
   backupRepos(repos) {
@@ -25,7 +24,7 @@ class Github {
     for (let repo of repos) {
       const backupRequest = {
         method: 'get',
-        url: `${this.apiBase}/repos/${repo}/zipball/master`,
+        url: `${this.conf.apiBase}/repos/${repo}/zipball/master`,
         responseType: 'stream',
         headers: {
           'Accept': 'application/vnd.github.v3.raw',
@@ -60,7 +59,7 @@ class Github {
   getRepos() {
     const reposRequest = {
       method: 'get',
-      url: `${this.apiBase}/users/${this.conf.username}/repos`,
+      url: `${this.conf.apiBase}/users/${this.conf.username}/repos`,
       headers: {
         'User-Agent': 'axios',
         'Authorization': `token ${this.conf.token}`
@@ -82,13 +81,12 @@ class Github {
     for (let repo of repos) {
       const deleteRepoRequest = {
         method: 'delete',
-        url: `${this.apiBase}/repos/${repo}`,
+        url: `${this.conf.apiBase}/repos/${repo}`,
         headers: {
           'User-Agent': 'axios',
           'Authorization': `token ${this.conf.token}`
         }
       }
-      
       let deleteRequest = axios(deleteRepoRequest).then((resp) => {
         if ((resp.status !== 204)) {
           return resp.status;
@@ -102,13 +100,13 @@ class Github {
     return axios.all(deletedRepos)
     .then((_deletedRepos) => {
       _deletedRepos.forEach(deletedRepo => console.log(`${deletedRepo} -> DELETED`));
-      return deletedRepos;
+      return _deletedRepos;
     });
   }
 
   findUser(username) {
     const usernameRequest = {
-      url: `${this.apiBase}/users/${username}`,
+      url: `${this.conf.apiBase}/users/${username}`,
       headers: {
         'User-Agent': 'axios',
         'Authorization': `token ${this.conf.token}`

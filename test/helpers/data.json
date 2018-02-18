@@ -1,0 +1,31 @@
+{
+  "repos": {
+    "hulk": {
+      "name": "Hulk-Diary",
+      "description": "Bruce Banner's secret journal",
+      "homepage": "https://github.com",
+      "private": false,
+      "has_issues": true,
+      "has_projects": true,
+      "has_wiki": true
+    },
+    "ironman": {
+      "name": "Ironman-Diary",
+      "description": "Tony Stark's secret journal",
+      "homepage": "https://github.com",
+      "private": false,
+      "has_issues": true,
+      "has_projects": true,
+      "has_wiki": true
+    },
+    "thor": {
+      "name": "Thor-Diary",
+      "description": "Donald Blake's Secret Diary",
+      "homepage": "https://github.com",
+      "private": false,
+      "has_issues": true,
+      "has_projects": true,
+      "has_wiki": true
+    }
+  }
+}

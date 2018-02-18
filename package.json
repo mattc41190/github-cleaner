@@ -12,7 +12,7 @@
   },
   "preferGlobal": true,
   "scripts": {
-    "test": "mocha",
+    "test": "mocha --timeout 100000 --file test/integration/github-remove-repo.spec.js",
     "start": "ENV=DEV node ./bin/ghclean.js",
     "release:major": "npm version major && npm publish",
     "release:minor": "npm version minor && npm publish",
